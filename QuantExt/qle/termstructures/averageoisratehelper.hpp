@@ -48,7 +48,8 @@ public:
                          const boost::shared_ptr<OvernightIndex>& overnightIndex, const Period& onTenor,
                          const Handle<Quote>& onSpread, Natural rateCutoff,
                          // Exogenous discount curve
-                         const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>());
+                         const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
+						 const boost::shared_ptr<AverageONIndexedCouponPricer>& onCouponPricer = boost::shared_ptr<AverageONIndexedCouponPricer>());
 
     //! \name RateHelper interface
     //@{
@@ -85,6 +86,8 @@ protected:
     RelinkableHandle<YieldTermStructure> termStructureHandle_;
     Handle<YieldTermStructure> discountHandle_;
     RelinkableHandle<YieldTermStructure> discountRelinkableHandle_;
+	//Pricer
+	boost::shared_ptr<AverageONIndexedCouponPricer> onCouponPricer_;
 };
 } // namespace QuantExt
 

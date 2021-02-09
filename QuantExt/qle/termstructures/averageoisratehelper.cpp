@@ -35,11 +35,12 @@ AverageOISRateHelper::AverageOISRateHelper(const Handle<Quote>& fixedRate, const
                                            const boost::shared_ptr<OvernightIndex>& overnightIndex,
                                            const Period& onTenor, const Handle<Quote>& onSpread, Natural rateCutoff,
                                            // Exogenous discount curve
-                                           const Handle<YieldTermStructure>& discountCurve)
+                                           const Handle<YieldTermStructure>& discountCurve,
+										   const boost::shared_ptr<AverageONIndexedCouponPricer>& onCouponPricer)
     : RelativeDateRateHelper(fixedRate), spotLagTenor_(spotLagTenor), swapTenor_(swapTenor), fixedTenor_(fixedTenor),
       fixedDayCounter_(fixedDayCounter), fixedCalendar_(fixedCalendar), fixedConvention_(fixedConvention),
       fixedPaymentAdjustment_(fixedPaymentAdjustment), overnightIndex_(overnightIndex), onTenor_(onTenor),
-      onSpread_(onSpread), rateCutoff_(rateCutoff), discountHandle_(discountCurve) {
+      onSpread_(onSpread), rateCutoff_(rateCutoff), discountHandle_(discountCurve), onCouponPricer_(onCouponPricer) {
 
     bool onIndexHasCurve = !overnightIndex_->forwardingTermStructure().empty();
     bool haveDiscountCurve = !discountHandle_.empty();
@@ -66,7 +67,8 @@ void AverageOISRateHelper::initializeDates() {
             .withFixedTerminationDateConvention(fixedConvention_)
             .withFixedPaymentAdjustment(fixedPaymentAdjustment_)
             .withRateCutoff(rateCutoff_)
-            .withDiscountingTermStructure(discountRelinkableHandle_);
+            .withDiscountingTermStructure(discountRelinkableHandle_)
+			.withONCouponPricer(onCouponPricer_);
 
     earliestDate_ = averageOIS_->startDate();
     latestDate_ = averageOIS_->maturityDate();
